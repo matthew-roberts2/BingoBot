@@ -1,4 +1,4 @@
-module awesomeProject
+module bingoBotGo
 
 go 1.17
 
