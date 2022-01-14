@@ -1,0 +1,36 @@
+package command
+
+import (
+	"bingoBotGo/bot/command/trigger"
+	"github.com/bwmarrin/discordgo"
+	"log"
+	"math/rand"
+)
+
+type CoinFlipCommand struct {
+	Command
+}
+
+func MakeCoinFlipCommand(botName string) CoinFlipCommand {
+	return CoinFlipCommand{Command{trigger.MakeNamePrefixedBasicStringMatch(botName, "flip a coin")}}
+}
+
+func (command CoinFlipCommand) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
+	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content) {
+		value := rand.Intn(2)
+
+		response := "It's tails!"
+		if value == 1 {
+			response = "It's heads!"
+		}
+
+		_, err := session.ChannelMessageSend(message.ChannelID, response)
+		if err != nil {
+			log.Println("Failed to send message reply")
+			return FAILURE
+		}
+		return SUCCESS
+	}
+
+	return PASS
+}
