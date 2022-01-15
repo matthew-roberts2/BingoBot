@@ -12,7 +12,7 @@ import (
 )
 
 func loadEnvs() {
-	log.Println("Loading data")
+	log.Println("Loading environment data")
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading environment files")
@@ -41,9 +41,15 @@ func buildBingoBot(client *discordgo.Session) bot.IBot {
 func main() {
 	loadEnvs()
 
+	botToken := os.Getenv("BINGO_BOT_TOKEN")
+
+	if botToken == "" {
+		log.Fatal("No bot token specified in environment")
+	}
+
 	log.Println("Building Discord client")
 
-	client, err := discordgo.New("Bot " + os.Getenv("BINGO_BOT_TOKEN"))
+	client, err := discordgo.New("Bot " + botToken)
 	if err != nil {
 		log.Fatal("Error creating Discord client: ", err)
 	}
