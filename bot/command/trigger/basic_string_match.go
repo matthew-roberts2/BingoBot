@@ -1,9 +1,9 @@
 package trigger
 
-type BasicStringMatchTrigger struct {
+type BasicStringMatch struct {
 	Match string
 }
 
-func (trigger BasicStringMatchTrigger) Check(str string) bool {
+func (trigger BasicStringMatch) Check(str string) bool {
 	return trigger.Match == str
 }

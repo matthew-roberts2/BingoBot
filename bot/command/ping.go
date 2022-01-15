@@ -6,16 +6,18 @@ import (
 	"log"
 )
 
-type PingCommand struct {
+type Ping struct {
 	Command
 }
 
-func MakePingCommand() PingCommand {
-	return PingCommand{Command{trigger.BasicStringMatchTrigger{Match: "ping"}}}
+func MakePing() Ping {
+	return Ping{Command{trigger.BasicStringMatch{Match: "ping"}}}
 }
 
-func (command PingCommand) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
+func (command Ping) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
 	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content) {
+		log.Println("Ping command triggered")
+
 		_, err := session.ChannelMessageSend(message.ChannelID, "pong")
 		if err != nil {
 			log.Println("Failed to send message reply")

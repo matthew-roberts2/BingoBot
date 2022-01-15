@@ -7,16 +7,18 @@ import (
 	"math/rand"
 )
 
-type CoinFlipCommand struct {
+type CoinFlip struct {
 	Command
 }
 
-func MakeCoinFlipCommand(botName string) CoinFlipCommand {
-	return CoinFlipCommand{Command{trigger.MakeNamePrefixedBasicStringMatch(botName, "flip a coin")}}
+func MakeCoinFlip(botName string) CoinFlip {
+	return CoinFlip{Command{trigger.MakeNamePrefixedBasicStringMatch(botName, "flip a coin")}}
 }
 
-func (command CoinFlipCommand) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
+func (command CoinFlip) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
 	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content) {
+		log.Println("Coin Flip command triggered")
+
 		value := rand.Intn(2)
 
 		response := "It's tails!"

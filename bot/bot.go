@@ -40,7 +40,6 @@ func (bot Bot) GetName() string {
 }
 
 func (bot Bot) HandleMessage(session *discordgo.Session, messageCreate *discordgo.MessageCreate) {
-	log.Println("Bot message handler triggered")
 	message := messageCreate.Message
 	var commandResult command.Result
 	for _, botCommand := range bot.registeredCommands {
@@ -50,7 +49,7 @@ func (bot Bot) HandleMessage(session *discordgo.Session, messageCreate *discordg
 		}
 	}
 
-	if commandResult == command.FAILURE {
+	if commandResult != command.SUCCESS {
 		log.Println("Bot handler failed to find any matching commands")
 	}
 }
