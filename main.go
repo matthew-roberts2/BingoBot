@@ -69,16 +69,3 @@ func main() {
 		log.Println("Error closing client: ", err)
 	}
 }
-
-//func pingHandler(session *discordgo.Session, message *discordgo.MessageCreate) {
-//	if message.Author.ID == session.State.User.ID {
-//		return
-//	}
-//
-//	if message.Content == "ping" {
-//		_, err := session.ChannelMessageSend(message.ChannelID, "pong")
-//		if err != nil {
-//			log.Println("Failed to send message!")
-//		}
-//	}
-//}
