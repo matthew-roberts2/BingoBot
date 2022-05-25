@@ -49,7 +49,7 @@ func (bot Bot) HandleMessage(session *discordgo.Session, messageCreate *discordg
 		}
 	}
 
-	if commandResult != command.SUCCESS {
+	if commandResult != command.SUCCESS && !bot.IsSelf(messageCreate.Message.Author) {
 		log.Println("Bot handler failed to find any matching commands")
 	}
 }

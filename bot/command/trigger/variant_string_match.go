@@ -8,7 +8,7 @@ func MakeVariantStringMatch(variants []string) VariantStringMatch {
 	return VariantStringMatch{variants: variants}
 }
 
-func (trigger VariantStringMatch) Check(str string) bool {
+func (trigger VariantStringMatch) Check(str string, _ string) bool {
 	variantMatch := false
 
 	for _, variant := range trigger.variants {

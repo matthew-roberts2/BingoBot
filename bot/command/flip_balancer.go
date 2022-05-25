@@ -18,7 +18,7 @@ func MakeFlipBalancer() FlipBalancer {
 }
 
 func (command FlipBalancer) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content) {
+	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
 		log.Println("Flip Balancer command triggered")
 
 		responseString := flipString

@@ -10,7 +10,7 @@ func MakePrefixVariantStringMatch(variants []string) PrefixVariantStringMatch {
 	return PrefixVariantStringMatch{variants}
 }
 
-func (trigger PrefixVariantStringMatch) Check(str string) bool {
+func (trigger PrefixVariantStringMatch) Check(str string, _ string) bool {
 	variantMatch := false
 
 	for _, variant := range trigger.variants {

@@ -18,9 +18,9 @@ func MakeRandomized(other Trigger, probabilityPercent float64) Randomized {
 	return Randomized{probabilityPercent, other}
 }
 
-func (trigger Randomized) Check(str string) bool {
+func (trigger Randomized) Check(str string, userId string) bool {
 	randomSuccess := rand.Float64() <= trigger.probabilityPercent
-	otherSuccess := trigger.other.Check(str)
+	otherSuccess := trigger.other.Check(str, userId)
 
 	if otherSuccess && !randomSuccess {
 		log.Println("Trigger would have fired, but randomly decided not to")

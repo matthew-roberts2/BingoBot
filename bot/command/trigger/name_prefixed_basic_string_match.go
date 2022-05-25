@@ -33,7 +33,7 @@ func MakeNamePrefixedBasicStringMatch(namePrefix string, textMatch string) NameP
 	}
 }
 
-func (trigger NamePrefixedBasicStringMatch) Check(str string) bool {
+func (trigger NamePrefixedBasicStringMatch) Check(str string, _ string) bool {
 	nameVariantMatch := false
 
 	for _, variant := range trigger.nameVariants {
