@@ -2,24 +2,14 @@ package main
 
 import (
 	"bingoBotGo/internal/bot"
-	"github.com/joho/godotenv"
+	"bingoBotGo/internal/util"
 	"log"
 	"sync"
 )
 
-var _ = loadEnvs()
-
-func loadEnvs() bool {
-	log.Println("Loading environment data")
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading environment files")
-	}
-
-	return true
-}
-
 func main() {
+	util.LoadEnvs()
+
 	var waitGroup sync.WaitGroup
 	var funcs = []func(wg *sync.WaitGroup){
 		bot.RunBingoBot,

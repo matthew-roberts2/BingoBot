@@ -1,7 +1,7 @@
 package bot
 
 import (
-	"bingoBotGo/internal/bot/command"
+	"bingoBotGo/internal/command"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
