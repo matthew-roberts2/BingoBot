@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 )
 
@@ -30,7 +29,7 @@ func buildBingoBot(client *discordgo.Session) IBot {
 	return bingoBot
 }
 
-func RunBingoBot(wg *sync.WaitGroup) {
+func RunBingoBot() {
 	botToken := os.Getenv("BINGO_BOT_TOKEN")
 
 	if botToken == "" {
@@ -68,5 +67,4 @@ func RunBingoBot(wg *sync.WaitGroup) {
 	<-notify
 
 	log.Println("Done runBot")
-	wg.Done()
 }
