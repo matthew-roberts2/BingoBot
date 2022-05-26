@@ -1,7 +1,7 @@
 package command
 
 import (
-	"bingoBotGo/bot/command/trigger"
+	"bingoBotGo/internal/bot/command/trigger"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"math/rand"

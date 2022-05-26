@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bingoBotGo/bot"
+	"bingoBotGo/internal/bot"
 	"github.com/joho/godotenv"
 	"log"
 	"sync"

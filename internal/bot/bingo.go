@@ -1,7 +1,7 @@
 package bot
 
 import (
-	"bingoBotGo/bot/command"
+	command2 "bingoBotGo/internal/bot/command"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -17,11 +17,11 @@ func buildBingoBot(client *discordgo.Session) IBot {
 
 	log.Println("Registering bot commands")
 
-	bingoBot.RegisterCommand(command.MakePing())
-	bingoBot.RegisterCommand(command.MakeCoinFlip(bingoBot.GetName()))
-	bingoBot.RegisterCommand(command.MakeFlipBalancer())
-	bingoBot.RegisterCommand(command.MakeDadJoke())
-	bingoBot.RegisterCommand(command.MakeCountdown(bingoBot.GetName()))
+	bingoBot.RegisterCommand(command2.MakePing())
+	bingoBot.RegisterCommand(command2.MakeCoinFlip(bingoBot.GetName()))
+	bingoBot.RegisterCommand(command2.MakeFlipBalancer())
+	bingoBot.RegisterCommand(command2.MakeDadJoke())
+	bingoBot.RegisterCommand(command2.MakeCountdown(bingoBot.GetName()))
 
 	log.Println("Registered", bingoBot.GetCommandCount(), "commands")
 
