@@ -8,7 +8,7 @@ import (
 
 type Bot struct {
 	HumanName          string
-	registeredCommands []command.ICommand
+	registeredCommands []command.Command
 	Client             *discordgo.Session
 }
 
@@ -19,10 +19,10 @@ type IBot interface {
 }
 
 func MakeBot(client *discordgo.Session, name string) Bot {
-	return Bot{registeredCommands: []command.ICommand{}, Client: client, HumanName: name}
+	return Bot{registeredCommands: []command.Command{}, Client: client, HumanName: name}
 }
 
-func (bot *Bot) RegisterCommand(command command.ICommand) {
+func (bot *Bot) RegisterCommand(command command.Command) {
 	log.Println("Registering command ", command)
 	bot.registeredCommands = append(bot.registeredCommands, command)
 }

@@ -2,6 +2,7 @@ package command
 
 import (
 	trigger2 "bingoBotGo/internal/trigger"
+	"bingoBotGo/internal/trigger/mods"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
@@ -20,7 +21,7 @@ type DadJoke struct {
 func MakeDadJoke() DadJoke {
 	return DadJoke{
 		Command{
-			trigger2.MakeRandomized(trigger2.MakePrefixVariantStringMatch(matchVariants), 0.1),
+			mods.MakeRandomized(trigger2.MakePrefixVariantStringMatch(matchVariants), 0.1),
 		},
 	}
 }

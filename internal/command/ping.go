@@ -1,30 +1,28 @@
 package command
 
 import (
+	"bingoBotGo/internal/bot"
 	"bingoBotGo/internal/trigger"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
 
-type Ping struct {
-	Command
-}
-
-func MakePing() Ping {
-	return Ping{Command{trigger.BasicStringMatch{Match: "ping"}}}
-}
-
-func (command Ping) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
-		log.Println("Ping command triggered")
-
-		_, err := session.ChannelMessageSend(message.ChannelID, "pong")
-		if err != nil {
-			log.Println("Failed to send message reply")
-			return FAILURE
-		}
-		return SUCCESS
+func MakePing() TriggeredCommand {
+	return TriggeredCommand{
+		Name:           "PingCommand",
+		SelfTriggering: false,
+		Trigger:        trigger.BasicStringMatch{Match: "ping"},
+		Action:         pingAction,
 	}
+}
 
-	return PASS
+func pingAction(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) (Result, error) {
+	log.Println("Ping command triggered")
+
+	_, err := session.ChannelMessageSend(message.ChannelID, "pong")
+	if err != nil {
+		log.Println("Failed to send message reply")
+		return FAILURE, err
+	}
+	return SUCCESS, nil
 }
