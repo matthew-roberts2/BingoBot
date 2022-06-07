@@ -2,61 +2,62 @@ package command
 
 import (
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"time"
 )
 
-type Countdown struct {
-	Command
+func MakeCountdown(botName string) TriggeredCommand {
+	return TriggeredCommand{
+		Name:           "CountdownCommand",
+		SelfTriggering: false,
+		Trigger:        trigger.MakeNamePrefixedBasicStringMatch(botName, "start a countdown"),
+		Action:         countdownAction,
+	}
 }
 
-func MakeCountdown(botName string) Countdown {
-	return Countdown{Command{trigger.MakeNamePrefixedBasicStringMatch(botName, "start a countdown")}}
+func countdownAction(bot types.IBot, message *discordgo.Message) (Result, error) {
+	go countdownRoutine(bot, message, 10)
+	return SUCCESS, nil
 }
 
-func countdown(session *discordgo.Session, message *discordgo.Message, seconds int) {
-	var boundMessage *discordgo.Message
-	haveBoundMessage := false
+func countdownRoutine(bot types.IBot, message *discordgo.Message, seconds int) {
+	var err error
+	var countdownMessage *discordgo.Message
 	timeLeft := seconds
+
+	// Defer a function to clean up the message once the countdown is finished
 	defer func() {
 		time.Sleep(5 * time.Second)
-		if err := session.ChannelMessageDelete(boundMessage.ChannelID, boundMessage.ID); err != nil {
-			log.Println("Failed to clean up message")
+		if err := bot.Session().ChannelMessageDelete(countdownMessage.ChannelID, countdownMessage.ID); err != nil {
+			log.Println("Failed to clean up countdown message")
 		}
 	}()
+
 	for timeLeft >= 0 {
 		var content string
+
 		if timeLeft != 0 {
 			content = fmt.Sprintf("%d", timeLeft)
 		} else {
 			content = ":stop_sign:"
 		}
 
-		if !haveBoundMessage {
-			m, err := session.ChannelMessageSend(message.ChannelID, content)
+		if countdownMessage == nil {
+			countdownMessage, err = bot.Session().ChannelMessageSend(message.ChannelID, content)
 			if err != nil {
-				log.Println("Failed to send message")
+				log.Println("Failed to send countdown initialization message")
 			}
-			boundMessage = m
-			haveBoundMessage = true
 		} else {
-			m, err := session.ChannelMessageEdit(boundMessage.ChannelID, boundMessage.ID, content)
+			countdownMessage, err = bot.Session().ChannelMessageEdit(countdownMessage.ChannelID, countdownMessage.ID, content)
 			if err != nil {
-				log.Println("Failed to update message")
+				log.Println("Failed to send countdown message update")
 			}
-			boundMessage = m
 		}
+
 		time.Sleep(1 * time.Second)
 		timeLeft -= 1
 	}
-}
-
-func (command Countdown) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
-		go countdown(session, message, 10)
-		return SUCCESS
-	}
-	return PASS
 }

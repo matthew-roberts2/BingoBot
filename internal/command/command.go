@@ -2,20 +2,38 @@ package command
 
 import (
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
+	"log"
 )
 
-// IBot - Stand-in interface to avoid a circular dependency
-type IBot interface {
-	IsSelf(author *discordgo.User) bool
+type Command interface {
+	Process(bot types.IBot, message *discordgo.Message) Result
 }
 
-type Command struct {
-	Trigger trigger.Trigger
+type Action func(bot types.IBot, message *discordgo.Message) (Result, error)
+
+type TriggeredCommand struct {
+	Name           string
+	SelfTriggering bool
+	Trigger        trigger.Trigger
+	Action         Action
 }
 
-type ICommand interface {
-	Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result
+func (command TriggeredCommand) Process(bot types.IBot, message *discordgo.Message) Result {
+	if (command.SelfTriggering || bot.IsSelf(message.Author.ID)) && command.Trigger.Check(message) {
+		if command.Action == nil {
+			return FAILURE
+		}
+
+		result, err := command.Action(bot, message)
+		if err != nil {
+			log.Printf("Error processing %s command: %s", command.Name, err)
+			return FAILURE
+		}
+		return result
+	}
+	return PASS
 }
 
 type Result int8

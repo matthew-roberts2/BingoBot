@@ -1,7 +1,9 @@
 package command
 
 import (
-	trigger2 "bingoBotGo/internal/trigger"
+	"bingoBotGo/internal/trigger"
+	"bingoBotGo/internal/trigger/mods"
+	types "bingoBotGo/internal/types"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
@@ -13,43 +15,34 @@ var matchVariants = []string{
 	"I'm ",
 }
 
-type DadJoke struct {
-	Command
-}
-
-func MakeDadJoke() DadJoke {
-	return DadJoke{
-		Command{
-			trigger2.MakeRandomized(trigger2.MakePrefixVariantStringMatch(matchVariants), 0.1),
-		},
+func MakeDadJoke() TriggeredCommand {
+	return TriggeredCommand{
+		Name:           "DadJokeCommand",
+		SelfTriggering: false,
+		Trigger:        mods.MakeRandomized(trigger.MakeVariantStringMatch(matchVariants), 0.15),
+		Action:         dadJokeAction,
 	}
 }
 
-func (command DadJoke) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
-		log.Println("Dad command triggered")
+func dadJokeAction(bot types.IBot, message *discordgo.Message) (Result, error) {
+	log.Println("Dad Joke command triggered")
 
-		trimAmt := -1
-		for _, variant := range matchVariants {
-			if strings.HasPrefix(message.Content, variant) {
-				trimAmt = len(variant)
-			}
+	var trimAmt int
+	for _, variant := range matchVariants {
+		if strings.HasPrefix(message.Content, variant) {
+			trimAmt = len(variant)
+			break
 		}
-		injectStr := message.Content[trimAmt:]
+	}
+	injectStr := message.Content[trimAmt:]
 
-		member, err := session.GuildMember(message.GuildID, session.State.User.ID)
-		if err != nil {
-			log.Println("Failed to look up self")
-			return FAILURE
-		}
+	botName := bot.GetGuildName(message.GuildID)
 
-		_, err = session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("Hi %s, I'm %s", injectStr, member.Nick))
-		if err != nil {
-			log.Println("Failed to send message reply")
-			return FAILURE
-		}
-		return SUCCESS
+	_, err := bot.Session().ChannelMessageSend(message.ChannelID, fmt.Sprintf("Hi %s, I'm %s", injectStr, botName))
+	if err != nil {
+		log.Println("Failed to send reply message")
+		return FAILURE, err
 	}
 
-	return PASS
+	return SUCCESS, nil
 }

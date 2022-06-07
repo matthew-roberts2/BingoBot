@@ -2,6 +2,7 @@ package command
 
 import (
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
@@ -13,27 +14,27 @@ type FlipBalancer struct {
 const flipString = "(╯°□°）╯︵ ┻━┻"
 const unflipString = "┬─┬ ノ( ゜-゜ノ)"
 
-func MakeFlipBalancer() FlipBalancer {
-	return FlipBalancer{Command{Trigger: trigger.MakeVariantStringMatch([]string{unflipString, flipString})}}
+func MakeFlipBalancer() TriggeredCommand {
+	return TriggeredCommand{
+		Name:           "FlipBalancerCommand",
+		SelfTriggering: false,
+		Trigger:        trigger.MakeVariantStringMatch([]string{unflipString, flipString}),
+		Action:         flipBalanceAction,
+	}
 }
 
-func (command FlipBalancer) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
-		log.Println("Flip Balancer command triggered")
+func flipBalanceAction(bot types.IBot, message *discordgo.Message) (Result, error) {
+	log.Println("Flip balance command triggered")
 
-		responseString := flipString
-
-		if message.Content == flipString {
-			responseString = unflipString
-		}
-
-		_, err := session.ChannelMessageSend(message.ChannelID, responseString)
-		if err != nil {
-			log.Println("Failed to send message reply")
-			return FAILURE
-		}
-		return SUCCESS
+	responseString := flipString
+	if message.Content == flipString {
+		responseString = unflipString
 	}
 
-	return PASS
+	_, err := bot.Session().ChannelMessageSend(message.ChannelID, responseString)
+	if err != nil {
+		log.Println("Failed to send message reply")
+		return FAILURE, err
+	}
+	return SUCCESS, nil
 }

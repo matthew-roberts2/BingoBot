@@ -2,37 +2,35 @@ package command
 
 import (
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"math/rand"
 )
 
-type CoinFlip struct {
-	Command
+func MakeCoinFlip(botName string) TriggeredCommand {
+	return TriggeredCommand{
+		Name:           "CoinFlipCommand",
+		SelfTriggering: false,
+		Trigger:        trigger.MakeNamePrefixedBasicStringMatch(botName, "flip a coin"),
+		Action:         coinFlipAction,
+	}
 }
 
-func MakeCoinFlip(botName string) CoinFlip {
-	return CoinFlip{Command{trigger.MakeNamePrefixedBasicStringMatch(botName, "flip a coin")}}
-}
+func coinFlipAction(bot types.IBot, message *discordgo.Message) (Result, error) {
+	log.Println("Coin Flip command triggered")
 
-func (command CoinFlip) Process(bot IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if !bot.IsSelf(message.Author) && command.Trigger.Check(message.Content, message.Author.ID) {
-		log.Println("Coin Flip command triggered")
+	value := rand.Intn(2)
 
-		value := rand.Intn(2)
-
-		response := "It's tails!"
-		if value == 1 {
-			response = "It's heads!"
-		}
-
-		_, err := session.ChannelMessageSend(message.ChannelID, response)
-		if err != nil {
-			log.Println("Failed to send message reply")
-			return FAILURE
-		}
-		return SUCCESS
+	response := "It's tails!"
+	if value == 1 {
+		response = "It's heads!"
 	}
 
-	return PASS
+	_, err := bot.Session().ChannelMessageSend(message.ChannelID, response)
+	if err != nil {
+		log.Println("Failed to send message reply")
+		return FAILURE, err
+	}
+	return SUCCESS, nil
 }

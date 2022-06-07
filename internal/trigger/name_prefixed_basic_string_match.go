@@ -2,6 +2,7 @@ package trigger
 
 import (
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 	"strings"
 )
 
@@ -33,7 +34,8 @@ func MakeNamePrefixedBasicStringMatch(namePrefix string, textMatch string) NameP
 	}
 }
 
-func (trigger NamePrefixedBasicStringMatch) Check(str string, _ string) bool {
+func (trigger NamePrefixedBasicStringMatch) Check(message *discordgo.Message) bool {
+	str := message.Content
 	nameVariantMatch := false
 
 	for _, variant := range trigger.nameVariants {
