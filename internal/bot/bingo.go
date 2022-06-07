@@ -2,6 +2,7 @@ package bot
 
 import (
 	"bingoBotGo/internal/command"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"syscall"
 )
 
-func buildBingoBot(client *discordgo.Session) Bot {
+func buildBingoBot(client *discordgo.Session) types.IBot {
 	log.Println("Constructing bot")
 
 	bingoBot := MakeBot(client, "Bingo")
