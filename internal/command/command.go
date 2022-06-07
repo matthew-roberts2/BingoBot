@@ -8,6 +8,7 @@ import (
 )
 
 type Command interface {
+	GetName() string
 	Process(bot types.IBot, message *discordgo.Message) Result
 }
 
@@ -18,6 +19,10 @@ type TriggeredCommand struct {
 	SelfTriggering bool
 	Trigger        trigger.Trigger
 	Action         Action
+}
+
+func (command TriggeredCommand) GetName() string {
+	return command.Name
 }
 
 func (command TriggeredCommand) Process(bot types.IBot, message *discordgo.Message) Result {

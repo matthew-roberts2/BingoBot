@@ -26,7 +26,7 @@ func MakeBot(client *discordgo.Session, name string) Bot {
 }
 
 func (bot *Bot) RegisterCommand(command command.Command) {
-	log.Println("Registering command ", command)
+	log.Printf("Registering command %s\n", command.GetName())
 	bot.registeredCommands = append(bot.registeredCommands, command)
 }
 
