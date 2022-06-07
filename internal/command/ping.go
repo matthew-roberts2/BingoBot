@@ -19,7 +19,7 @@ func MakePing() TriggeredCommand {
 func pingAction(bot types.IBot, message *discordgo.Message) (Result, error) {
 	log.Println("Ping command triggered")
 
-	_, err := bot.Session().ChannelMessageSend(message.ChannelID, "pong")
+	_, err := bot.SendMessageWithTyping(message.ChannelID, "pong")
 	if err != nil {
 		log.Println("Failed to send message reply")
 		return FAILURE, err

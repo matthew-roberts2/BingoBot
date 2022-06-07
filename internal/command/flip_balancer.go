@@ -31,7 +31,7 @@ func flipBalanceAction(bot types.IBot, message *discordgo.Message) (Result, erro
 		responseString = unflipString
 	}
 
-	_, err := bot.Session().ChannelMessageSend(message.ChannelID, responseString)
+	_, err := bot.SendMessageWithTyping(message.ChannelID, responseString)
 	if err != nil {
 		log.Println("Failed to send message reply")
 		return FAILURE, err

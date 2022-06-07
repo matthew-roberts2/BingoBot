@@ -5,6 +5,7 @@ import (
 	"bingoBotGo/internal/util"
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"time"
 )
 
 const GUILD_NAME_EXPIRIY_IN_SECONDS = 60 * 60 * 24
@@ -46,6 +47,19 @@ func (bot Bot) Session() *discordgo.Session {
 	return bot.session
 }
 
+func (bot Bot) SendMessageWithTyping(channelId string, message string) (*discordgo.Message, error) {
+	duration := time.Duration(len(message)*50) * time.Millisecond
+
+	if err := bot.Session().ChannelTyping(channelId); err != nil {
+		log.Println("Failed to start typing for typing message")
+		return nil, err
+	}
+
+	time.Sleep(duration)
+
+	return bot.Session().ChannelMessageSend(channelId, message)
+}
+
 func (bot Bot) GetGuildName(guildId string) string {
 	name, exists := bot.guildNameCache.Get(guildId)
 	if !exists {
@@ -65,6 +79,7 @@ func (bot Bot) lookupBotNameInGuild(guildId string) string {
 
 func (bot Bot) HandleMessage(session *discordgo.Session, inboundMessage *discordgo.MessageCreate) {
 	message := inboundMessage.Message
+
 	var commandResult command.Result
 	for _, botCommand := range bot.registeredCommands {
 		commandResult = botCommand.Process(bot, message)

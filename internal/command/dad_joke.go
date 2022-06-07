@@ -38,7 +38,7 @@ func dadJokeAction(bot types.IBot, message *discordgo.Message) (Result, error) {
 
 	botName := bot.GetGuildName(message.GuildID)
 
-	_, err := bot.Session().ChannelMessageSend(message.ChannelID, fmt.Sprintf("Hi %s, I'm %s", injectStr, botName))
+	_, err := bot.SendMessageWithTyping(message.ChannelID, fmt.Sprintf("Hi %s, I'm %s", injectStr, botName))
 	if err != nil {
 		log.Println("Failed to send reply message")
 		return FAILURE, err

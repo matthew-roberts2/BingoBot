@@ -27,7 +27,7 @@ func coinFlipAction(bot types.IBot, message *discordgo.Message) (Result, error) 
 		response = "It's heads!"
 	}
 
-	_, err := bot.Session().ChannelMessageSend(message.ChannelID, response)
+	_, err := bot.SendMessageWithTyping(message.ChannelID, response)
 	if err != nil {
 		log.Println("Failed to send message reply")
 		return FAILURE, err

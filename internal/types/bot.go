@@ -7,5 +7,6 @@ type IBot interface {
 	IsSelf(userId string) bool
 	GetInternalName() string
 	GetGuildName(guildId string) string
+	SendMessageWithTyping(channelId string, message string) (*discordgo.Message, error)
 	Session() *discordgo.Session
 }

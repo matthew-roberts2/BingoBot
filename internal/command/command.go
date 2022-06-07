@@ -26,7 +26,11 @@ func (command TriggeredCommand) GetName() string {
 }
 
 func (command TriggeredCommand) Process(bot types.IBot, message *discordgo.Message) Result {
-	if (command.SelfTriggering || bot.IsSelf(message.Author.ID)) && command.Trigger.Check(message) {
+	if command.Trigger.Check(message) {
+		if !command.SelfTriggering && bot.IsSelf(message.Author.ID) {
+			return PASS
+		}
+
 		if command.Action == nil {
 			return FAILURE
 		}
@@ -38,6 +42,7 @@ func (command TriggeredCommand) Process(bot types.IBot, message *discordgo.Messa
 		}
 		return result
 	}
+
 	return PASS
 }
 
