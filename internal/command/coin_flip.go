@@ -1,8 +1,8 @@
 package command
 
 import (
-	"bingoBotGo/internal/bot"
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"math/rand"
@@ -17,7 +17,7 @@ func MakeCoinFlip(botName string) TriggeredCommand {
 	}
 }
 
-func coinFlipAction(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) (Result, error) {
+func coinFlipAction(bot types.IBot, message *discordgo.Message) (Result, error) {
 	log.Println("Coin Flip command triggered")
 
 	value := rand.Intn(2)
@@ -27,7 +27,7 @@ func coinFlipAction(bot bot.IBot, session *discordgo.Session, message *discordgo
 		response = "It's heads!"
 	}
 
-	_, err := session.ChannelMessageSend(message.ChannelID, response)
+	_, err := bot.Session().ChannelMessageSend(message.ChannelID, response)
 	if err != nil {
 		log.Println("Failed to send message reply")
 		return FAILURE, err

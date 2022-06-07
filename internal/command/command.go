@@ -1,17 +1,17 @@
 package command
 
 import (
-	"bingoBotGo/internal/bot"
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
 
 type Command interface {
-	Process(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) Result
+	Process(bot types.IBot, message *discordgo.Message) Result
 }
 
-type Action func(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) (Result, error)
+type Action func(bot types.IBot, message *discordgo.Message) (Result, error)
 
 type TriggeredCommand struct {
 	Name           string
@@ -20,13 +20,13 @@ type TriggeredCommand struct {
 	Action         Action
 }
 
-func (command TriggeredCommand) Process(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) Result {
-	if (command.SelfTriggering || bot.IsSelf(message.Author)) && command.Trigger.Check(message) {
+func (command TriggeredCommand) Process(bot types.IBot, message *discordgo.Message) Result {
+	if (command.SelfTriggering || bot.IsSelf(message.Author.ID)) && command.Trigger.Check(message) {
 		if command.Action == nil {
 			return FAILURE
 		}
 
-		result, err := command.Action(bot, session, message)
+		result, err := command.Action(bot, message)
 		if err != nil {
 			log.Printf("Error processing %s command: %s", command.Name, err)
 			return FAILURE
@@ -35,13 +35,6 @@ func (command TriggeredCommand) Process(bot bot.IBot, session *discordgo.Session
 	}
 	return PASS
 }
-
-/*
-                | Self Triggering | Not Self Triggering |
-==========================================================
-Msg is Self     | true            | false
-Msg is not self | true            | true
-*/
 
 type Result int8
 

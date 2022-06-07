@@ -1,8 +1,8 @@
 package command
 
 import (
-	"bingoBotGo/internal/bot"
 	"bingoBotGo/internal/trigger"
+	types "bingoBotGo/internal/types"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
@@ -16,13 +16,14 @@ func MakePing() TriggeredCommand {
 	}
 }
 
-func pingAction(bot bot.IBot, session *discordgo.Session, message *discordgo.Message) (Result, error) {
+func pingAction(bot types.IBot, message *discordgo.Message) (Result, error) {
 	log.Println("Ping command triggered")
 
-	_, err := session.ChannelMessageSend(message.ChannelID, "pong")
+	_, err := bot.Session().ChannelMessageSend(message.ChannelID, "pong")
 	if err != nil {
 		log.Println("Failed to send message reply")
 		return FAILURE, err
 	}
+
 	return SUCCESS, nil
 }

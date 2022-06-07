@@ -9,18 +9,20 @@ import (
 	"syscall"
 )
 
-func buildBingoBot(client *discordgo.Session) IBot {
+func buildBingoBot(client *discordgo.Session) Bot {
 	log.Println("Constructing bot")
 
 	bingoBot := MakeBot(client, "Bingo")
 
 	log.Println("Registering bot commands")
 
+	botName := bingoBot.GetInternalName()
+
 	bingoBot.RegisterCommand(command.MakePing())
-	bingoBot.RegisterCommand(command.MakeCoinFlip(bingoBot.GetName()))
+	bingoBot.RegisterCommand(command.MakeCoinFlip(botName))
 	bingoBot.RegisterCommand(command.MakeFlipBalancer())
 	bingoBot.RegisterCommand(command.MakeDadJoke())
-	bingoBot.RegisterCommand(command.MakeCountdown(bingoBot.GetName()))
+	bingoBot.RegisterCommand(command.MakeCountdown(botName))
 
 	log.Println("Registered", bingoBot.GetCommandCount(), "commands")
 
