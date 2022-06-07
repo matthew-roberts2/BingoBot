@@ -19,7 +19,7 @@ func MakeDadJoke() TriggeredCommand {
 	return TriggeredCommand{
 		Name:           "DadJokeCommand",
 		SelfTriggering: false,
-		Trigger:        mods.MakeRandomized(trigger.MakeVariantStringMatch(matchVariants), 0.15),
+		Trigger:        mods.MakeRandomized(trigger.MakePrefixVariantStringMatch(matchVariants), 0.15),
 		Action:         dadJokeAction,
 	}
 }
