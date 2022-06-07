@@ -63,7 +63,7 @@ func (bot Bot) lookupBotNameInGuild(guildId string) string {
 	return member.Nick
 }
 
-func (bot Bot) HandleMessage(inboundMessage *discordgo.MessageCreate) {
+func (bot Bot) HandleMessage(session *discordgo.Session, inboundMessage *discordgo.MessageCreate) {
 	message := inboundMessage.Message
 	var commandResult command.Result
 	for _, botCommand := range bot.registeredCommands {
