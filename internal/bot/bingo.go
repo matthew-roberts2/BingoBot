@@ -24,6 +24,7 @@ func buildBingoBot(client *discordgo.Session) types.IBot {
 	bingoBot.RegisterCommand(command.MakeFlipBalancer())
 	bingoBot.RegisterCommand(command.MakeDadJoke())
 	bingoBot.RegisterCommand(command.MakeCountdown(botName))
+	bingoBot.RegisterCommand(command.MakeGenerateName(botName))
 
 	log.Println("Registered", bingoBot.GetCommandCount(), "commands")
 
